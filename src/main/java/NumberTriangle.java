@@ -170,3 +170,5 @@ public class NumberTriangle {
         System.out.println(mt.getRoot());
     }
 }
+
+    // to be able to pass the test
