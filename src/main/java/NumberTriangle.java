@@ -64,6 +64,13 @@ public class NumberTriangle {
      */
     public void maxSumPath() {
         // for fun [not for credit]:
+        if (!isLeaf()) {
+            left.maxSumPath();
+            right.maxSumPath();
+            root = root + Math.max(left.getRoot(), right.getRoot());
+            left = null;
+            right = null;
+        }
     }
 
 
@@ -88,8 +95,18 @@ public class NumberTriangle {
      *
      */
     public int retrieve(String path) {
-        // TODO implement this method
-        return -1;
+        if (path.isEmpty()) {
+            return root;
+        }
+
+        char direction = path.charAt(0);
+        String remainingPath = path.substring(1);
+
+        if (direction == 'l') {
+            return left.retrieve(remainingPath);
+        } else {
+            return right.retrieve(remainingPath);
+        }
     }
 
     /** Read in the NumberTriangle structure from a file.
@@ -109,24 +126,34 @@ public class NumberTriangle {
         InputStream inputStream = NumberTriangle.class.getClassLoader().getResourceAsStream(fname);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
-
-        // TODO define any variables that you want to use to store things
-
-        // will need to return the top of the NumberTriangle,
-        // so might want a variable for that.
         NumberTriangle top = null;
+        NumberTriangle[] previousRow = null;
 
         String line = br.readLine();
         while (line != null) {
+            String[] parts = line.trim().split("\\s+");
+            NumberTriangle[] currentRow = new NumberTriangle[parts.length];
 
-            // remove when done; this line is included so running starter code prints the contents of the file
-            System.out.println(line);
+            // Create NumberTriangle objects for current row
+            for (int i = 0; i < parts.length; i++) {
+                currentRow[i] = new NumberTriangle(Integer.parseInt(parts[i]));
+            }
 
-            // TODO process the line
+            // Set up parent-child relationships
+            if (previousRow != null) {
+                for (int i = 0; i < previousRow.length; i++) {
+                    previousRow[i].setLeft(currentRow[i]);
+                    previousRow[i].setRight(currentRow[i + 1]);
+                }
+            } else {
+                // First row - this is the top
+                top = currentRow[0];
+            }
 
-            //read the next line
+            previousRow = currentRow;
             line = br.readLine();
         }
+
         br.close();
         return top;
     }
