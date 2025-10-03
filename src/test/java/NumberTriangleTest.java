@@ -46,3 +46,4 @@ public class NumberTriangleTest {
         assertEquals(4, mt.retrieve("llllllllllllll"));
     }
 }
+
